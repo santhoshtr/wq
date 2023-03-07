@@ -1,7 +1,7 @@
-from flask import Flask, make_response, render_template, redirect, request, jsonify
+from flask import Flask, abort, render_template, redirect, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from store.qa import db, QAStore
-
+from wq import get_questions
 
 import os
 import json
@@ -15,16 +15,28 @@ database_file = "sqlite:///{}".format(
 app.config["SQLALCHEMY_DATABASE_URI"] = database_file
 db.init_app(app)
 
+
+def get_languages():
+    return ['en', 'es']
+
 @app.route('/', methods = ['GET', 'POST'])
 def index():
      return render_template("index.html", languages=get_languages())
 
-@app.route('/api/qa', methods = ['GET'])
-def get_qa():
-    language=request.args.get("language")
-    title=request.args.get("title")
+@app.route('/api/qa/<language>/<title>', methods = ['GET'])
+def get_qa(language, title):
+    qas = []
     qa_list=store.query_questions(language,title)
-    return jsonify([q[0].to_dict() for q in qa_list])
+    qas = [q[0].to_dict() for q in qa_list]
+    if len(qas) == 0:
+        predicted_qas=get_questions(language, title)
+        if len(predicted_qas) > 0:
+            store.insert_qa_list(language,title, predicted_qas)
+            qa_list=store.query_questions(language,title)
+            qas = [q[0].to_dict() for q in qa_list]
+
+    return jsonify(qas)
+
 
 if __name__ == "__main__":
     f = open('test.json')

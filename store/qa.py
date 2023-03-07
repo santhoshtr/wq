@@ -1,9 +1,10 @@
-from sqlalchemy import ForeignKey, select
+from sqlalchemy import ForeignKey, select, func
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.inspection import inspect
 
 from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
+import logging
 
 db = SQLAlchemy()
 
@@ -31,13 +32,16 @@ class QAStore():
     def insert_qa_list(
         self, language, title, qa_list
     ):
+        existing_records = self.query_questions(language, title);
+        if len(existing_records.all()):
+            return
         article=ARTICLES(
                 language=language,
                 title=title,
         )
         self.db.session.add(article)
         self.db.session.commit()
-
+        logging.info(f'[Add] {language} - {title}')
         qa_obj_list  =[ QA(
                 question=item["question"],
                 answer=item["answer"],

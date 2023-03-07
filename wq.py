@@ -1,8 +1,12 @@
 from api import chatgpt, wiki
 import json
+import logging
 
-def get_questions(title:str, language="en"):
+def get_questions(language, title:str):
+    logging.info(f'[ChatGPT] Getting questions for {language} - {title}...')
     wiki_text = wiki.get_wikipedia_text(f"https://{language}.wikipedia.org/wiki/{title}")
+    if not wiki_text:
+        return []
     prompt = (
         # fstring with a variable called content and a variable called search_question
         f"""
@@ -13,9 +17,9 @@ def get_questions(title:str, language="en"):
     )
 
     response = chatgpt.create_response(prompt)
-    # print("*"+response+"*")
+    logging.info(f'[ChatGPT] Got questions for {language} - {title}')
     return json.loads(response)["questions"]
 
 if __name__ == "__main__":
-    response = get_questions("Charminar", "en")
+    response = get_questions( "en", "Charminar")
     print(response)

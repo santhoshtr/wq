@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>W?</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="Natural Language querying interface for wikipedia" />
+        <meta name="viewport" content="initial-scale=1,user-scalable=yes" />
+        <link rel="stylesheet" href="../static/css/style.css" />
+    </head>
+
+    <body>
+        <header>
+            <h1> W? </h1>
+            <h3> Natural Language querying interface for wikipedia</h3>
+        </header>
+
+        <main id="app">
+            <div class="row source-form">
+                <input id="language" type="text"    v-model="language"/>
+                <input id="title" type="text"  v-model="title"/>
+            </div>
+            <div class="row search-form">
+                <textarea type="search" id="search" placeholder="Ask a question" autocomplete=off v-model="query"  ></textarea>
+            </div>
+            <ul class="row results" v-if="searchResults.length && query && query !== selectedQuestion ">
+                <li
+                  class="result"
+                  v-for="qa in searchResults"
+                  :key="qa.id"
+                  @click="selectQuestion(qa)"
+                >
+                  [[ qa.question ]]
+                </li>
+              </ul>
+              <p class="selectedq" v-text="selectedQuestion"></p>
+              <p class="answer"  v-text="answer"></p>
+        </main>
+        <footer>
+            <p>An experimental natural language based querying system for Wikipedia. Questions are generated using gpt-3.5-turbo model by OpenAI</p>
+        </footer>
+        <script type="module" src="../static/index.js"></script>
+    </body>
+
+</html>

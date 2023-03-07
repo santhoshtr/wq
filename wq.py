@@ -10,7 +10,7 @@ def get_questions(language, title:str):
     prompt = (
         # fstring with a variable called content and a variable called search_question
         f"""
-        Act as if no information exists in the universe other that what is in this text:
+        Act as if no information exists in the universe other than what is in this text:
         `{wiki_text}`
         Provide all possible questions and answers in json format with "question" and "answer" as keys.
         """

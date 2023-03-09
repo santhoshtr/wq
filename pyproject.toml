@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools", "wheel", "hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wq"
+classifiers = ["Private :: Do Not Upload"]
+version = "0"
+requires-python = ">=3.9"
+dependencies = [
+    "openai",
+    "python-dotenv",
+    "Flask",
+    "gunicorn",
+    "bs4",
+    "flask_sqlalchemy",
+    "SQLAlchemy-serializer"
+]
+
+

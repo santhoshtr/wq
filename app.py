@@ -8,16 +8,24 @@ import json
 
 DATABASE_NAME="wq.db"
 app = Flask(__name__)
+
 project_dir = os.path.dirname(os.path.abspath(__file__))
 database_file = "sqlite:///{}".format(
     os.path.join(project_dir, DATABASE_NAME)
 )
 app.config["SQLALCHEMY_DATABASE_URI"] = database_file
 db.init_app(app)
-
+store = QAStore(db)
 
 def get_languages():
     return ['en', 'es']
+
+@app.after_request
+def after_request(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    return response
 
 @app.route('/', methods = ['GET', 'POST'])
 def index():

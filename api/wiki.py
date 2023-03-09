@@ -1,6 +1,7 @@
 import requests
 import bs4
 
+
 def get_wikipedia_text(url: str, paragraph_number: int = 10) -> str:
     """
     This function takes a wikipedia url and returns the text of the first 3 paragraphs
@@ -29,6 +30,7 @@ def get_wikipedia_text(url: str, paragraph_number: int = 10) -> str:
     text = "\n".join(non_empty_pars)
 
     return text
+
 
 if __name__ == "__main__":
     text = get_wikipedia_text("https://en.wikipedia.org/wiki/Charminar")

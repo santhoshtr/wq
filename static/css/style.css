@@ -1,10 +1,17 @@
+:root {
+    --background-color: rgb(46, 52, 64);
+    --text-color: #eee;
+    --border-color: steelblue;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     margin: auto;
     width: 90%;
     max-width: 100ch;
     height: 100vh;
-
+    background-color: var(--background-color);
+    color: var(--text-color);
     /* grid container settings */
     display: grid;
     grid-template-columns: 1fr;
@@ -20,8 +27,11 @@ main {
 }
 
 header {
-    color: steelblue;
     grid-area: header;
+}
+
+h3 {
+    font-weight: 400;
 }
 
 .row {
@@ -42,7 +52,9 @@ input, textarea {
     min-width: 0;
     border: none;
     outline: none;
-    border-bottom: 1px solid steelblue;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .results {
@@ -53,22 +65,24 @@ input, textarea {
     margin: 0;
     position: absolute;
     z-index: 10;
-    background: #fff;
+    background: var(--background-color);
 }
 
 .results > .result {
     line-height: 2em;
     padding: 8px;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .results > .result:hover {
-    color: white;
-    background-color: steelblue;
+    background-color: var(--text-color);
+    color: var(--background-color);
     cursor: pointer;
+    transition: 0.1s;
 }
 
 .selectedq, .answer {
-    color: steelblue;
     font-size: 1.25em;
 }
 

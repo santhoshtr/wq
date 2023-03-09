@@ -1,6 +1,0 @@
-openai
-python-dotenv
-Flask
-bs4
-flask_sqlalchemy
-SQLAlchemy-serializer

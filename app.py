@@ -33,6 +33,10 @@ def index():
 
 @app.route('/api/qa/<language>/<title>', methods = ['GET'])
 def get_qa(language, title):
+    auth_cookie_name = os.environ.get('WQ_AUTH_COOKIE')
+    if auth_cookie_name:
+        if not request.cookies.get(auth_cookie_name):
+            abort(401, description="API usage not authorized")
     qas = []
     qa_list=store.query_questions(language,title)
     qas = [q[0].to_dict() for q in qa_list]

@@ -35,6 +35,7 @@ def index():
 def get_qa(language, title):
     auth_cookie_name = os.environ.get('WQ_AUTH_COOKIE')
     if auth_cookie_name:
+        print(request.cookies)
         if not request.cookies.get(auth_cookie_name):
             abort(401, description="API usage not authorized")
     qas = []

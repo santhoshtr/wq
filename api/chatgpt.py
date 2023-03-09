@@ -21,6 +21,6 @@ def create_response(prompt: str) -> Dict:
         answer = {"choices": [{"text": msg}]}
     except openai.error.OpenAIError as e:
         logging.error(e)
-        msg = "I am sorry, but I am unable to answer this question. I can only answer questions that can be answered using the content of Wikipedia. Please try to rephrase your question."
+        msg = "I am sorry, but I am unable to answer this question."
         answer = {"choices": [{"text": msg}]}
     return answer

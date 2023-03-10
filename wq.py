@@ -3,6 +3,7 @@ import json
 import logging
 import sys
 
+logging.basicConfig(level=logging.INFO)
 def get_questions(language, title: str):
     logging.info(f"[ChatGPT] Getting questions for {language} - {title}...")
     wiki_text = wiki.get_wikipedia_text(

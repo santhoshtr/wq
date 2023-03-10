@@ -33,6 +33,7 @@ def index():
 
 @app.route('/api/qa/<language>/<title>', methods = ['GET'])
 def get_qa(language, title):
+    initdb()
     auth_cookie_name = os.environ.get('WQ_AUTH_COOKIE')
     if auth_cookie_name:
         print(request.cookies)
@@ -50,13 +51,13 @@ def get_qa(language, title):
 
     return jsonify(qas)
 
+def initdb():
+    db.create_all()
 
 if __name__ == "__main__":
     f = open('test.json')
     data = json.load(f)
     f.close()
-    app.app_context().push()
-    db.create_all()
     store = QAStore(db)
     store.insert_qa_list('en', 'Charminar', data)
     # result=store.query_questions('en', 'Charminar')

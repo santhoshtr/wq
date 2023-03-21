@@ -14,7 +14,10 @@ dependencies = [
     "gunicorn",
     "bs4",
     "flask_sqlalchemy",
-    "SQLAlchemy-serializer"
+    "SQLAlchemy-serializer",
+    "transformers",
+    "torch",
+    "onnxruntime",
 ]
 
 

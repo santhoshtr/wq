@@ -23,14 +23,22 @@
                 <input id="title" type="text"  v-model="title"/>
             </div>
             <div class="row search-form">
-                <textarea type="search" id="search" placeholder="Ask a question" autocomplete=off v-model="query"  ></textarea>
+                <textarea type="search" id="search" placeholder="Ask a question"
+                    autocomplete=off
+                    v-model="query"
+                    @keyup.enter="chooseItem"
+                    @keyup.down="moveDown"
+                    @keyup.up="moveUp"
+                    @focusout="focusout"
+                ></textarea>
             </div>
             <ul class="row results" v-if="searchResults.length && query && query !== selectedQuestion ">
                 <li
                   class="result"
-                  v-for="qa in searchResults"
+                  v-for="(qa, index) in searchResults"
                   :key="qa.id"
                   @click="selectQuestion(qa)"
+                  :class="{active: selectedIndex === index}"
                 >
                   [[ qa.question ]]
                 </li>

@@ -75,7 +75,8 @@ input, textarea {
     color: var(--text-color);
 }
 
-.results > .result:hover {
+.results > .result:hover,
+.results > .result.active {
     background-color: var(--text-color);
     color: var(--background-color);
     cursor: pointer;

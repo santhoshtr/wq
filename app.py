@@ -1,7 +1,7 @@
 from flask import Flask, abort, render_template, redirect, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from store.qa import db, QAStore
-from wq import get_questions
+from wq import get_questions, get_answer
 
 import os
 import json
@@ -34,11 +34,6 @@ def index():
 @app.route('/api/qa/<language>/<title>', methods = ['GET'])
 def get_qa(language, title):
     initdb()
-    auth_cookie_name = os.environ.get('WQ_AUTH_COOKIE')
-    if auth_cookie_name:
-        print(request.cookies)
-        if not request.cookies.get(auth_cookie_name):
-            abort(401, description="API usage not authorized")
     qas = []
     qa_list=store.query_questions(language,title)
     qas = [q[0].to_dict() for q in qa_list]
@@ -50,6 +45,18 @@ def get_qa(language, title):
             qas = [q[0].to_dict() for q in qa_list]
 
     return jsonify(qas)
+
+
+@app.route('/api/q/<language>/<title>', methods = ['POST'])
+def get_q(language, title):
+    question=request.json.get("question")
+    answerObj = get_answer(question, language, title)
+
+    return jsonify({
+        "question": question,
+        "answer": answerObj.get("answer"),
+        "score": answerObj.get("score")
+    })
 
 def initdb():
     db.create_all()

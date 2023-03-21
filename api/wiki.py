@@ -1,7 +1,11 @@
 import requests
 import bs4
+import functools
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
+@functools.cache
 def get_wikipedia_text(url: str, paragraph_number: int = 10) -> str:
     """
     This function takes a wikipedia url and returns the text of the first 3 paragraphs
@@ -19,7 +23,7 @@ def get_wikipedia_text(url: str, paragraph_number: int = 10) -> str:
         A string of the first 3 paragraphs of text
 
     """
-
+    logging.info(f"[Wiki] Getting content for {url}")
     page = requests.get(url, timeout=100)
     soup = bs4.BeautifulSoup(page.content, "html.parser")
 

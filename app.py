@@ -46,17 +46,15 @@ def get_qa(language, title):
 
     return jsonify(qas)
 
-
-@app.route('/api/q/<language>/<title>', methods = ['POST'])
+@app.route('/api/q/<language>/', defaults={'title': []}, methods = ['POST','GET'])
+@app.route('/api/q/<language>/<title>', methods = ['POST','GET'])
 def get_q(language, title):
-    question=request.json.get("question")
+    if "question" in request.args:
+        question = request.args.get("question")
+    else:
+        question=request.json.get("question")
     answerObj = get_answer(question, language, title)
-
-    return jsonify({
-        "question": question,
-        "answer": answerObj.get("answer"),
-        "score": answerObj.get("score")
-    })
+    return jsonify(answerObj)
 
 def initdb():
     db.create_all()

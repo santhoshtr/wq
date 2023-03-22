@@ -5,16 +5,16 @@ const app = createApp({
     delimiters: ['[[', ']]'],
     setup() {
         let query = ref('')
-        let language = ref('en')
+        let language = ref('')
         let selectedIndex = ref(0)
-        let title = ref('Charminar')
+        let title = ref('')
 
         const fetchQuestions = ()=> {
-            fetch(`/api/qa/${language.value}/${title.value}`).then((response) => response.json()).then((r)=>qas.value=r)
+            fetch(`/api/qa/${language.value||'en'}/${title.value}`).then((response) => response.json()).then((r)=>qas.value=r)
         }
 
         const getAnswer = (question)=> {
-            return fetch(`/api/q/${language.value}/${title.value}`,{
+            return fetch(`/api/q/${language.value||'en'}/${title.value}`,{
                     method: "POST",
                     body: JSON.stringify({
                         question
@@ -27,18 +27,20 @@ const app = createApp({
 
         const selectQuestion = (qa) => {
             if(!qa){
+                document.body.classList.add("wait")
                 return getAnswer(query.value).then((answerObj)=>{
-                    answer.value = answerObj.answer
+                    answer.value = answerObj
+                    selectedQuestion.value = query.value
                     searchResults.value=[]
+                }).finally(()=>{
+                    document.body.classList.remove("wait")
                 });
             }
             selectedQuestion.value = qa.question
             query.value = qa.question
-            answer.value = qa.answer
+            answer.value = qa
             searchResults.value=[]
         }
-
-
 
         let qas = ref([])
         let searchResults = ref([])

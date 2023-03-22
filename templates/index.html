@@ -18,19 +18,22 @@
         </header>
 
         <main id="app">
-            <div class="row source-form">
-                <input id="language" type="text"    v-model="language"/>
-                <input id="title" type="text"  v-model="title"/>
-            </div>
+
             <div class="row search-form">
-                <textarea type="search" id="search" placeholder="Ask a question"
+                <input type="search" id="search" placeholder="Ask a question"
                     autocomplete=off
                     v-model="query"
                     @keyup.enter="chooseItem"
                     @keyup.down="moveDown"
                     @keyup.up="moveUp"
                     @focusout="focusout"
-                ></textarea>
+                />
+                <button @click="chooseItem">❓</button>
+            </div>
+
+            <div class="row source-form"> Filter by:
+                <input id="language" type="text" placeholder="Language" v-model="language"/>
+                <input id="title" type="text" placeholder="Article title"  v-model="title"/>
             </div>
             <ul class="row results" v-if="searchResults.length && query && query !== selectedQuestion ">
                 <li
@@ -39,15 +42,29 @@
                   :key="qa.id"
                   @click="selectQuestion(qa)"
                   :class="{active: selectedIndex === index}"
+                  v-text="qa.question"
                 >
-                  [[ qa.question ]]
                 </li>
               </ul>
               <p class="selectedq" v-text="selectedQuestion"></p>
-              <p class="answer"  v-text="answer"></p>
+              <p class="answer" :title="answer.score" v-text="answer.answer"></p>
+              <div class="context" >
+                <h2><a :href="answer.source" v-text="answer.source"></a></h2>
+                <p v-html="answer.context"></p>
+              </div>
+              <h2 v-if="answer.answer">Explore</h2>
+              <ul class="row sources" v-if="answer.answer">
+                <li
+                  class="result"
+                  v-for="(title, index) in answer.searched_in"
+                  :key="title"
+                >
+                    <a :href="title" v-text="title"></a>
+                </li>
+              </ul>
         </main>
         <footer>
-            <p>An experimental natural language based querying system for Wikipedia. Questions are generated using gpt-3.5-turbo model by OpenAI</p>
+            <p>An experimental natural language based querying system for Wikipedia. Questions are generated using gpt-3.5-turbo model by OpenAI. Answering questions is based on  distilbert-base-cased-distilled-squad model optimized using ONNX. The answering context is provided using a hybrid strategy of named entity recognition on query and titles extracted from Wikipedia native search results for the query.</p>
         </footer>
     </body>
 

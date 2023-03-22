@@ -22,6 +22,10 @@ body {
       'footer';
 }
 
+body.wait {
+    cursor: wait;
+}
+
 main {
     grid-area: main;
 }
@@ -40,21 +44,27 @@ h3 {
 }
 
 .row.source-form {
-    grid-template-columns: 2fr 10fr;
+    grid-template-columns: 3fr 2fr 7fr;
 }
 
 .row.search-form {
-    grid-template-columns: 1fr;
+    grid-template-columns: 11fr 1fr;
+    border: 1px solid var(--border-color);
+    padding: 1em
 }
 
-input, textarea {
+button {
+    cursor: pointer;
+}
+
+input, textarea, button {
     font-size: 1.25em;
     min-width: 0;
     border: none;
     outline: none;
-    border-bottom: 1px solid var(--border-color);
     background-color: var(--background-color);
     color: var(--text-color);
+    font-family: sans-serif;
 }
 
 .results {
@@ -99,4 +109,9 @@ footer {
     grid-area: footer;
     border-top: 1px solid steelblue;
     margin-top: 4em;
+}
+
+a {
+    cursor: pointer;
+    color: var(--text-color);
 }

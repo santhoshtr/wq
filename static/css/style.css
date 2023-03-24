@@ -115,3 +115,46 @@ a {
     cursor: pointer;
     color: var(--text-color);
 }
+
+.wait button {
+    animation: rotation 1s infinite alternate;
+    background: transparent;
+}
+
+.sources {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0;
+}
+
+.sources li{
+    list-style: none;
+}
+
+.article-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 40vh;
+    overflow: hidden;
+    padding: 1em;
+}
+
+.article-card img{
+    object-fit: cover;
+    width: 100%;
+    height: 20vh;
+}
+
+.article-card p{
+    max-height: 4em;
+    overflow: clip;
+}
+
+@keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+}

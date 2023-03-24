@@ -13,6 +13,7 @@ OPENAI_API_KEY=your-key-goes-here
 Install dependencies in a virtual env:
 
 ```
+sudo apt install redis
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt

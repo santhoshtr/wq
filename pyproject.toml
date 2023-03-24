@@ -19,6 +19,7 @@ dependencies = [
     "torch",
     "onnxruntime",
     "nltk",
+    "redis",
 ]
 
 

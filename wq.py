@@ -1,13 +1,15 @@
-from api import chatgpt, wiki
-from utils import find_entities, chunk, annotate
 import json
 import logging
-import sys
 import multiprocessing
-from distillbertqa import onnx_qa
-from typing import List, Dict
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Dict, List
+
 import redis
+
+from api import chatgpt, wiki
+from distillbertqa import onnx_qa
+from utils import annotate, chunk, find_entities
 
 cache = redis.Redis(host="localhost", port=6379)
 

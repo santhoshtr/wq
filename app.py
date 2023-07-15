@@ -1,10 +1,10 @@
-from flask import Flask, abort, render_template, redirect, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from store.qa import db, QAStore
-from wq import get_questions, get_answer
-
-import os
 import json
+import os
+
+from flask import Flask, jsonify, render_template, request
+
+from store.qa import QAStore, db
+from wq import get_answer, get_questions
 
 DATABASE_NAME = "wq.db"
 app = Flask(__name__)

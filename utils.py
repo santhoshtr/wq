@@ -4,11 +4,12 @@ nltk.download("averaged_perceptron_tagger")
 nltk.download("maxent_ne_chunker")
 nltk.download("words")
 nltk.download("punkt")
-from nltk.tokenize import word_tokenize
-from nltk.tag import pos_tag
-from nltk.chunk import tree2conlltags
-from typing import List
 from itertools import islice
+from typing import List
+
+from nltk.chunk import tree2conlltags
+from nltk.tag import pos_tag
+from nltk.tokenize import word_tokenize
 
 
 def find_entities(text: str) -> List[str]:

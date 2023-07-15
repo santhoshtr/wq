@@ -1,8 +1,9 @@
-import requests
-import bs4
 import logging
 from typing import List
+
+import bs4
 import redis
+import requests
 
 cache = redis.Redis(host="localhost", port=6379)
 

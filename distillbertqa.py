@@ -1,3 +1,7 @@
+from typing import Union
+
+import numpy as np
+from onnxruntime import InferenceSession
 from transformers import (
     AutoConfig,
     AutoTokenizer,
@@ -6,9 +10,6 @@ from transformers import (
     QuestionAnsweringPipeline,
 )
 from transformers.modeling_outputs import QuestionAnsweringModelOutput
-from onnxruntime import InferenceSession
-import numpy as np
-from typing import Union
 
 model_name = "distilbert-base-cased-distilled-squad"
 tokenizer: PreTrainedTokenizer = AutoTokenizer.from_pretrained("models/onnx/tokenizer")

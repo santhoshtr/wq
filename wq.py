@@ -16,7 +16,7 @@ cache = redis.Redis(host="localhost", port=6379)
 MAX_WORKERS = multiprocessing.cpu_count()
 THRESHOLD_SCORE = 0.9
 logging.basicConfig(level=logging.INFO)
-import redis
+
 
 cache = redis.StrictRedis(host="localhost", port=6379, decode_responses=True)
 
@@ -57,9 +57,7 @@ def qa_worker(question, language, title) -> List[Dict]:
         contexts.append(context)
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures_context_map = {
-            executor.submit(onnx_qa, question, context): context for context in contexts
-        }
+        futures_context_map = {executor.submit(onnx_qa, question, context): context for context in contexts}
         for future in as_completed(futures_context_map):
             context = futures_context_map[future]
             answer: Dict = future.result()
@@ -89,10 +87,7 @@ def get_answer(question: str, language: str, titles: List[str] = []):
 
     answers = []
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = [
-            executor.submit(qa_worker, question, language, title)
-            for title in candidate_pages
-        ]
+        futures = [executor.submit(qa_worker, question, language, title) for title in candidate_pages]
         for future in futures:
             worker_answers = future.result()
             answers += worker_answers

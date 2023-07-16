@@ -39,17 +39,12 @@ class QAStore:
         self.db.session.add(article)
         self.db.session.commit()
         logging.info(f"[Add] {language} - {title}")
-        qa_obj_list = [
-            QA(question=item["question"], answer=item["answer"], article_id=article.id)
-            for item in qa_list
-        ]
+        qa_obj_list = [QA(question=item["question"], answer=item["answer"], article_id=article.id) for item in qa_list]
         self.db.session.add_all(qa_obj_list)
         self.db.session.commit()
 
     def query_questions(self, language, title):
         db_search_results = self.db.session.execute(
-            select(QA)
-            .join(ARTICLES)
-            .where(ARTICLES.language == language, ARTICLES.title == title)
+            select(QA).join(ARTICLES).where(ARTICLES.language == language, ARTICLES.title == title)
         )
         return db_search_results

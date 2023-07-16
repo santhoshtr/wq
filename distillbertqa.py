@@ -37,16 +37,10 @@ class BertForQuestionAnswering(PreTrainedModel):
         if token_type_ids is not None:
             inputs["token_type_ids"] = token_type_ids.numpy()
 
-        outputs = self.session.run(
-            output_names=["start_logits", "end_logits"], input_feed=dict(inputs)
-        )
-        return QuestionAnsweringModelOutput(
-            start_logits=outputs[0], end_logits=outputs[1]
-        )
+        outputs = self.session.run(output_names=["start_logits", "end_logits"], input_feed=dict(inputs))
+        return QuestionAnsweringModelOutput(start_logits=outputs[0], end_logits=outputs[1])
 
 
 ## ONNX MODEL
-model: PreTrainedModel = BertForQuestionAnswering(
-    model_name=model_name, model_path=model_path
-)
+model: PreTrainedModel = BertForQuestionAnswering(model_name=model_name, model_path=model_path)
 onnx_qa = QuestionAnsweringPipeline(model=model, tokenizer=tokenizer)

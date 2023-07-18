@@ -1,0 +1,45 @@
+.prompt-container {
+    grid-column: span 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    align-items: start;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    margin: 1em 0;
+    padding: 2px 14px;
+    background-color: var(--background-color);
+    width: 80%;
+}
+
+.prompt {
+    grid-column: span 11;
+    height: 25vh;
+    resize: none;
+}
+
+.prompt-submit {
+    align-self:self-end;
+    font-size: 5vh;
+}
+
+.reply-container {
+    grid-column: span 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    align-items: start;
+    width: 80%;
+    justify-self: end;
+
+    border-radius: 20px;
+    background-color: var(--header-background-color);
+
+}
+
+.reply-container:not(:empty){
+    border: 1px solid var(--border-color);
+}
+.reply {
+    grid-column: span 11;
+    height: 25vh;
+    padding: 1em;
+}

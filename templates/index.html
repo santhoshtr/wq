@@ -1,66 +1,54 @@
 <!doctype html>
 <html lang="en">
 
-    <head>
-        <meta charset="utf-8" />
-        <title>W?</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description" content="Natural Language querying interface for wikipedia" />
-        <meta name="viewport" content="initial-scale=1,user-scalable=yes" />
-        <link rel="stylesheet" href="../static/css/style.css" />
-        <script type="module" src="../static/index.js"></script>
-    </head>
+<head>
+    <meta charset="utf-8" />
+    <title>W?</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Natural Language querying interface for wikipedia" />
+    <meta name="viewport" content="initial-scale=1,user-scalable=yes" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="module" src="../static/index.js"></script>
+</head>
 
-    <body>
+    <body id="app">
         <header>
-            <h1> W? </h1>
-            <h3> Natural Language querying interface for wikipedia</h3>
+            <span class="logo"> W? </span>
+            <div class="search-form">
+                <input type="search"
+                    id="search"
+                    class="query-input"
+                    placeholder="Ask a question"
+                    v-model="query"
+                    @keyup.enter="onQuery" />
+                <button class="query-submit" @click="onQuery">❓</button>
+            </div>
         </header>
 
-        <main id="app">
+        <main >
+            <section class="answer-container">
+                <p class="answer" v-if="answer.waiting">
+                    Reading Wikipedia articles and answering. This might take a while...
+                </p>
+                <p class="answer" :title="answer.score" v-text="answer.answer" v-else></p>
+            </section>
+            <section class="results-container">
+                <h2 v-if="answer.title">Relevant articles</h2>
+                <ul class="sources" v-if="answer.title">
+                    <li class="result" v-for="pageinfo in pageInfos" :key="pageinfo.title">
+                            <img :src="pageinfo.image" />
+                            <div class="pageinfo">
+                                <h2><a :href="pageinfo.url" v-text="pageinfo.title"></a></h2>
+                                <p v-text="answer.context"></p>
+                            </div>
 
-            <div class="row search-form">
-                <input type="search" id="search" placeholder="Ask a question" v-model="query" @keyup.enter="chooseItem"
-                    @keyup.down="moveDown" @keyup.up="moveUp" @focusout="focusout" />
-                <button @click="chooseItem">❓</button>
-            </div>
-
-            <div class="row source-form"> Filter by:
-                <input id="language" type="text" placeholder="Language" v-model="language" />
-                <input id="title" type="text" placeholder="Article title" v-model="title" />
-            </div>
-            <ul class="row results" v-if="searchResults.length && query && query !== selectedQuestion ">
-                <li class="result" v-for="(qa, index) in searchResults" :key="qa.id" @click="selectQuestion(qa)"
-                    :class="{active: selectedIndex === index}" v-text="qa.question">
-                </li>
-            </ul>
-            <p class="selectedq" v-text="selectedQuestion"></p>
-            <p class="answer" :title="answer.score" v-text="answer.answer"></p>
-            <div class="context">
-                <h2><a :href="answer.source" v-text="answer.source"></a></h2>
-                <p v-html="answer.context"></p>
-            </div>
-            <h2 v-if="answer.answer">Explore</h2>
-            <ul class="row sources" v-if="answer.answer">
-                <li class="result" v-for="pageinfo in pageInfos" :key="pageinfo.title">
-                    <section class="article-card">
-                        <img :src="pageinfo.image" />
-                        <div>
-                            <h2><a :href="pageinfo.url" v-text="pageinfo.title"></a></h2>
-                            <p v-text="pageinfo.summary"></p>
-                        </div>
-                    </section>
-                </li>
-            </ul>
+                    </li>
+                </ul>
+             </section>
         </main>
-        <footer>
-            <p>An experimental natural language based querying system for Wikipedia. Questions are generated using
-                <code>gpt-3.5-turbo</code> model by OpenAI. Answering questions is based on <a
-                    href="https://huggingface.co/distilbert-base-cased-distilled-squad">distilbert-base-cased-distilled-squad</a>
-                model optimized using <a href="https://onnxruntime.ai">ONNX</a>. The answering context is provided using
-                a hybrid strategy of named entity recognition on query and titles extracted from Wikipedia native search
-                results for the query.</p>
-        </footer>
+        {% include 'footer.html' %}
+
     </body>
 
 </html>

@@ -8,23 +8,23 @@ classifiers = ["Private :: Do Not Upload"]
 version = "0"
 requires-python = ">=3.9"
 dependencies = [
-    "openai",
+    "fastapi",
+    "pydantic",
+    "uvicorn",
+    "jinja2",
     "python-dotenv",
-    "Flask",
-    "gunicorn",
     "bs4",
-    "flask_sqlalchemy",
-    "SQLAlchemy-serializer",
-    "transformers",
-    "torch",
-    "onnxruntime",
-    "nltk",
     "redis",
+    "gpt4all",
+    "faiss-cpu",
+    "llama-cpp-python",
+    "tqdm",
 ]
 
 
 [project.optional-dependencies]
 dev = [
+    "isort",
     "black",
     "ruff",
     "tox",

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>W?</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="Natural Language querying interface for wikipedia" />
+        <meta name="viewport" content="initial-scale=1,user-scalable=yes" />
+        <link rel="stylesheet" href="../static/css/style.css" />
+        <link rel="stylesheet" href="../static/css/chat.css" />
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script type="module" src="../static/chat.js"></script>
+    </head>
+
+
+    <body id="chatapp">
+        <header>
+            <span class="logo"> W? </span>
+            <h1>Chat</h1>
+        </header>
+
+        <main>
+            <section class="prompt-container">
+                <textarea class="prompt" placeholder="Ask a question"   v-model="prompt"
+                    @keydown.enter.exact.prevent="onPrompt" @keydown.enter.shift.exact.prevent="prompt += '\n'">
+                </textarea>
+                <button class="prompt-submit" @click="onPrompt">➢</button>
+            </section>
+            <section class="reply-container">
+                <p class="answer" v-if="waiting">
+                    ...
+                </p>
+                <div class="reply" v-if="reply" v-text="reply"></div>
+            </section>
+        </main>
+        {% include 'footer.html' %}
+
+    </body>
+
+</html>

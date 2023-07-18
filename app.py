@@ -1,76 +1,85 @@
 import json
 import os
 
-from flask import Flask, jsonify, render_template, request
+from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
-from store.qa import QAStore, db
-from wq import get_answer, get_questions
-
-DATABASE_NAME = "wq.db"
-app = Flask(__name__)
+from wq.embedding import get_embedder
+from wq.llm import llm_qa_streamer, llm_prompt_streamer
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
-database_file = "sqlite:///{}".format(os.path.join(project_dir, DATABASE_NAME))
-app.config["SQLALCHEMY_DATABASE_URI"] = database_file
-db.init_app(app)
-store = QAStore(db)
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 
 def get_languages():
     return ["en", "es"]
 
 
-@app.after_request
-def after_request(response):
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
-    response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.get("/chat", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("chat.html", {"request": request})
+
+@app.post("/api/r")
+async def retrieve_context(request: Request) -> Response:
+    request_obj: dict = await request.json()
+    print(request_obj)
+    request_obj.get("language", "en")
+    query: str = request_obj.get("query").strip()
+    results = get_embedder().search(query, 1)
+    result = results[0]
+    responsejson: dict = json.dumps(
+        {
+            "query": result.get("query"),
+            "score": result.get("score"),
+            "context": result.get("context"),
+            "language": result.get("language"),
+            "title": result.get("title"),
+        }
+    )
+    response: Response = Response(content=responsejson, media_type="application/json")
     return response
 
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    return render_template("index.html", languages=get_languages())
+@app.post("/api/q")
+async def qa(request: Request) -> Response:
+    request_obj: dict = await request.json()
+    context: str = request_obj.get("context", "en")
+    request_obj.get("language", "en")
+    query: str = request_obj.get("query").strip()
+    return StreamingResponse(
+        llm_qa_streamer(query, context),
+        media_type='text/event-stream'
+    )
 
-
-@app.route("/api/qa/<language>/<title>", methods=["GET"])
-def get_qa(language, title):
-    initdb()
-    qas = []
-    qa_list = store.query_questions(language, title)
-    qas = [q[0].to_dict() for q in qa_list]
-    if len(qas) == 0:
-        predicted_qas = get_questions(language, title)
-        if len(predicted_qas) > 0:
-            store.insert_qa_list(language, title, predicted_qas)
-            qa_list = store.query_questions(language, title)
-            qas = [q[0].to_dict() for q in qa_list]
-
-    return jsonify(qas)
-
-
-@app.route("/api/q/<language>/", defaults={"title": []}, methods=["POST", "GET"])
-@app.route("/api/q/<language>/<title>", methods=["POST", "GET"])
-def get_q(language, title):
-    if "question" in request.args:
-        question = request.args.get("question")
-    else:
-        question = request.json.get("question")
-    answerObj = get_answer(question, language, title)
-    return jsonify(answerObj)
-
-
-def initdb():
-    db.create_all()
+@app.post("/api/chat")
+async def qa(request: Request) -> Response:
+    request_obj: dict = await request.json()
+    prompt: str = request_obj.get("prompt")
+    prompt = prompt.strip()
+    return StreamingResponse(
+        llm_prompt_streamer(prompt),
+        media_type='text/event-stream'
+    )
 
 
 if __name__ == "__main__":
-    f = open("test.json")
-    data = json.load(f)
-    f.close()
-    store = QAStore(db)
-    store.insert_qa_list("en", "Charminar", data)
-    # result=store.query_questions('en', 'Charminar')
-    # print(result.all())
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host="0.0.0.0", port=port)

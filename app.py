@@ -7,8 +7,8 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from wq.embedding import get_embedder
-from wq.llm import llm_qa_streamer, llm_prompt_streamer
+from wq.llm import llm_prompt_streamer, llm_qa_streamer
+from wq.retriever import retrieve
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 app = FastAPI()
@@ -34,28 +34,18 @@ async def index(request: Request):
 
 
 @app.get("/chat", response_class=HTMLResponse)
-async def index(request: Request):
+async def chat_page(request: Request):
     return templates.TemplateResponse("chat.html", {"request": request})
+
 
 @app.post("/api/r")
 async def retrieve_context(request: Request) -> Response:
     request_obj: dict = await request.json()
-    print(request_obj)
     request_obj.get("language", "en")
     query: str = request_obj.get("query").strip()
-    results = get_embedder().search(query, 1)
-    result = results[0]
-    responsejson: dict = json.dumps(
-        {
-            "query": result.get("query"),
-            "score": result.get("score"),
-            "context": result.get("context"),
-            "language": result.get("language"),
-            "title": result.get("title"),
-        }
-    )
-    response: Response = Response(content=responsejson, media_type="application/json")
-    return response
+    n_results = request_obj.get("n_results", 4)
+    results = retrieve(query=query, n_results=n_results)
+    return Response(content=json.dumps(results), media_type="application/json")
 
 
 @app.post("/api/q")
@@ -64,20 +54,15 @@ async def qa(request: Request) -> Response:
     context: str = request_obj.get("context", "en")
     request_obj.get("language", "en")
     query: str = request_obj.get("query").strip()
-    return StreamingResponse(
-        llm_qa_streamer(query, context),
-        media_type='text/event-stream'
-    )
+    return StreamingResponse(llm_qa_streamer(query, context), media_type="text/event-stream")
+
 
 @app.post("/api/chat")
-async def qa(request: Request) -> Response:
+async def chat_api(request: Request) -> Response:
     request_obj: dict = await request.json()
     prompt: str = request_obj.get("prompt")
     prompt = prompt.strip()
-    return StreamingResponse(
-        llm_prompt_streamer(prompt),
-        media_type='text/event-stream'
-    )
+    return StreamingResponse(llm_prompt_streamer(prompt), media_type="text/event-stream")
 
 
 if __name__ == "__main__":

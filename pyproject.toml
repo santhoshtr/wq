@@ -9,21 +9,18 @@ version = "0"
 requires-python = ">=3.9"
 dependencies = [
     "fastapi",
-    "pydantic",
     "uvicorn",
     "jinja2",
     "python-dotenv",
     "bs4",
-    "redis",
-    "gpt4all",
-    "faiss-cpu",
     "llama-cpp-python",
-    "tqdm",
+    "chromadb",
 ]
 
 
 [project.optional-dependencies]
 dev = [
+    "pip-tools",
     "isort",
     "black",
     "ruff",

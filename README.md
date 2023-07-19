@@ -22,8 +22,19 @@ pip install -r requirements.txt
 Then run:
 
 ```
-gunicorn
+uvicorn app:app
 ```
 
 Open the link provided by gunicorn.
+
+### Using docker
+
+Clone the repository, build the docker image and run it.
+
+```bash
+docker build -t wq .
+docker run -dp 80:8989 wq:latest
+```
+
+Open http://0.0.0.0:8989/ using browser
 

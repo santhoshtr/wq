@@ -14,7 +14,7 @@
 
     <body id="app">
         <header>
-            <span class="logo"> W? </span>
+            <img class="logo mw-logo-icon" src="https://en.wikipedia.org/static/images/icons/wikipedia.png" alt="" aria-hidden="true" width="50" height="50">
             <div class="search-form">
                 <input type="search"
                     id="search"
@@ -22,25 +22,25 @@
                     placeholder="Ask a question"
                     v-model="query"
                     @keyup.enter="onQuery" />
-                <button class="query-submit" @click="onQuery">❓</button>
+                <button class="query-submit" @click="onQuery">?</button>
             </div>
         </header>
 
         <main >
             <section class="answer-container">
-                <p class="answer" v-if="answer.waiting">
+                <p class="answer" v-if="waiting">
                     Reading Wikipedia articles and answering. This might take a while...
                 </p>
-                <p class="answer" :title="answer.score" v-text="answer.answer" v-else></p>
+                <p class="answer" v-text="answer" v-else></p>
             </section>
-            <section class="results-container">
-                <h2 v-if="answer.title">Relevant articles</h2>
-                <ul class="sources" v-if="answer.title">
-                    <li class="result" v-for="pageinfo in pageInfos" :key="pageinfo.title">
-                            <img :src="pageinfo.image" />
+            <section class="results-container" v-if="contexts.length">
+                <h2>Relevant articles</h2>
+                <ul class="sources">
+                    <li class="result" v-for="(context, index) in contexts" :key="context.title">
+                            <img :src="context.image" />
                             <div class="pageinfo">
-                                <h2><a :href="pageinfo.url" v-text="pageinfo.title"></a></h2>
-                                <p v-text="answer.context"></p>
+                                <h2 :title="context.score"><a :href="context?.url" v-text="context.title"></a></h2>
+                                <p v-html="context.html||context.context"></p>
                             </div>
 
                     </li>

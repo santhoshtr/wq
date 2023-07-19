@@ -1,20 +1,26 @@
-FROM debian:stable
+FROM python:3.10-slim
 
-WORKDIR /srv
+WORKDIR /app
 
+# We need to set the host to 0.0.0.0 to allow outside access
+ENV HOST 0.0.0.0
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential unzip wget cmake python libopenblas-dev
+    apt-get install -y --no-install-recommends build-essential wget cmake libopenblas-dev ninja-build
 
-COPY ./requirements.txt /srv/requirements.txt
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt /app/requirements.txt
 
-ENV CXX=clang++
-
-#  Ccompile llama-cpp-python with Openblas
+#  Compile llama-cpp-python with Openblas
 ENV LLAMA_OPENBLAS=1
 
-RUN pip install --no-cache-dir --upgrade -r /srv/requirements.txt
+RUN pip install -r /app/requirements.txt
 
-COPY ./app /srv/app
+COPY . /app
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "80"]
+RUN chmod +x ./entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
+
+EXPOSE 80

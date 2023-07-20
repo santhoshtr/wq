@@ -32,6 +32,14 @@ uvicorn app:app
 
 Open the link provided by gunicorn.
 
+### Add Wikipedia articles to Vector store
+
+Pass the titles to the `wq.injest` module.  You may prepare a textfile with titles and pipe to the script as well.
+
+```bash
+echo "Oxygen" | python -m wq.injest
+```
+
 ### Using docker
 
 Clone the repository, build the docker image and run it.

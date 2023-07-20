@@ -1,3 +1,5 @@
+#!/bin/bash
+
 MODEL_DIR="models"
 mkdir -p $MODEL_DIR
 LLMURL="https://huggingface.co/TheBloke/orca_mini_3B-GGML/resolve/main/orca-mini-3b.ggmlv3.q4_0.bin"

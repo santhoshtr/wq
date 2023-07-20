@@ -6,16 +6,13 @@ WORKDIR /app
 ENV HOST 0.0.0.0
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential wget cmake libopenblas-dev ninja-build sqlite3
+    apt-get install -y --no-install-recommends build-essential wget cmake sqlite3
 
 # install dependencies
 RUN pip install --upgrade pip
 COPY ./requirements.txt /app/requirements.txt
 
 RUN pip install -r /app/requirements.txt
-
-# Compile llama-cpp-python with Openblas
-RUN LLAMA_OPENBLAS=on pip install --force-reinstall --ignore-installed --no-cache-dir llama-cpp-python
 
 COPY . /app
 

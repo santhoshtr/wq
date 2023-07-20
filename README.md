@@ -18,7 +18,6 @@ Use the `.env.example` to setup environment variables in a `.env` file.
 Install dependencies in a virtual env:
 
 ```
-sudo apt install redis
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt

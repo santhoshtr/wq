@@ -2,6 +2,7 @@
 
 An experimental natural language based querying system for Wikipedia.
 
+![Screenshot_20230720_161157](https://github.com/santhoshtr/wq/assets/161672/3292b03f-0920-47a1-8913-f2715cca8795)
 
 ## How does it work?
 

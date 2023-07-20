@@ -1,14 +1,19 @@
 # W?
 
-An experimental natural language based querying system for Wikipedia. Questions are generated using gpt-3.5-turbo model by OpenAI
+An experimental natural language based querying system for Wikipedia.
+
+
+## How does it work?
+
+* Vector embedddings of sections of Wikipedia articles are prepared and stored
+* Calculate the vector embedding for the given query
+* Do a vector search in the vector store with Hierarchical Navigable Small World (HNSW) to find vectors that are similar
+* Retrieve the corresponding article and narrowed down section
+* Use the narrowed down context with an LLM to articulate the answer.
 
 ## How to run?
 
-Provide OPENAI_API_KEY as environment value. An easy way to do this is to create a file nameed `.env` and add a line like this:
-
-```
-OPENAI_API_KEY=your-key-goes-here
-```
+Use the `.env.example` to setup environment variables in a `.env` file.
 
 Install dependencies in a virtual env:
 

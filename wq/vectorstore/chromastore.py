@@ -29,7 +29,7 @@ class ChromaVectorStore(BaseVectorStore):
         ids = set()
 
         article_metadata = article.get_page_metadata()
-        if "title" not in self.metadata:
+        if "title" not in article_metadata:
             # Article not found?
             return
         text_sections, html_sections = article.get_sections()

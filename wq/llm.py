@@ -29,7 +29,7 @@ def llm_qa_streamer(question: str, context: str):
     prompt: str = f"""
 Use the following pieces of context to answer the question. Answer should be short. If you don't know the answer, just say that you don't know, don't try to make up an answer.
 Question: {question}
-Context: {context}
+context: {context}
 
 Answer:
     """
@@ -38,6 +38,10 @@ Answer:
 
 
 def llm_prompt_streamer(prompt: str):
-    stream = get_llm()(prompt, top_k=1, temperature=1, stream=True)
+    llm = get_llm()
+    stream = llm(prompt, top_k=1, temperature=1, stream=True)
     for resp in stream:
         yield resp["choices"][0]["text"]
+
+    llm =None
+

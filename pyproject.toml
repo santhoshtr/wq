@@ -10,6 +10,7 @@ requires-python = ">=3.9"
 dependencies = [
     "fastapi",
     "uvicorn",
+    "pydantic",
     "jinja2",
     "python-dotenv",
     "bs4",

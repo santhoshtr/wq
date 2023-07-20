@@ -3,7 +3,7 @@ const { createApp, watch, ref, onMounted, computed } = Vue
 const app = createApp({
     delimiters: ['[[', ']]'],
     setup() {
-        let query = ref('What is water?')
+        let query = ref('Is Dodo a type of pigeon?')
         let language = ref('en')
         let title = ref('')
         let waiting = ref(false)
@@ -28,7 +28,7 @@ const app = createApp({
 
             const reader = response.body.getReader();
             let done, value;
-            answer.value = ""
+            answer.value = "According to Wikipedia, "
             while (!done) {
                 ({ value, done } = await reader.read());
                 if (done) {

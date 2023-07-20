@@ -37,12 +37,9 @@
                 <h2>Relevant articles</h2>
                 <ul class="sources">
                     <li class="result" v-for="(context, index) in contexts" :key="context.title">
+                            <h2 :title="context.score"><a :href="context?.url" v-text="context.title"></a></h2>
                             <img :src="context.image" />
-                            <div class="pageinfo">
-                                <h2 :title="context.score"><a :href="context?.url" v-text="context.title"></a></h2>
-                                <p v-html="context.html||context.context"></p>
-                            </div>
-
+                            <div class="context" v-html="context.html||context.context"></div>
                     </li>
                 </ul>
              </section>

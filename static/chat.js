@@ -1,9 +1,25 @@
 const { createApp, watch, ref, onMounted, computed } = Vue
 
+const placeholder="Instruction:\n\
+You are a natural language generation system that generates well written sentences from given data. \
+You generate sentences only based on the given data.\
+\n\n\
+Data:\n\
+\n\
+Place name: Mudipon\n\
+Country: Thailand\n\
+Area: 2,034 km\n\
+Known for : tourism\n\
+vistitors: 6 million per year.\n\
+popular resorts: Puerto de la Cruz and Playa de las Américas.\n\
+Climate: Tropical\n\
+\n\
+The above data can be written in paragraph as:"
+
 const app = createApp({
     delimiters: ['[[', ']]'],
     setup() {
-        let prompt = ref('What is water?')
+        let prompt = ref(placeholder)
         let reply = ref('')
         let waiting = ref(false)
         const getReply = async () => {

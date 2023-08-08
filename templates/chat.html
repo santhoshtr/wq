@@ -22,8 +22,7 @@
 
         <main>
             <section class="prompt-container">
-                <textarea class="prompt" placeholder="Ask a question"   v-model="prompt"
-                    @keydown.enter.exact.prevent="onPrompt" @keydown.enter.shift.exact.prevent="prompt += '\n'">
+                <textarea class="prompt" placeholder="Ask a question"  v-model="prompt">
                 </textarea>
                 <button class="prompt-submit" @click="onPrompt">➢</button>
             </section>

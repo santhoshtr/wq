@@ -13,8 +13,7 @@
 
 .prompt {
     grid-column: span 11;
-    height: 25vh;
-    resize: none;
+    height: 40vh;
 }
 
 .prompt-submit {

@@ -14,6 +14,9 @@ COPY ./requirements.txt /app/requirements.txt
 
 RUN pip install -r /app/requirements.txt
 
+# Compile llama-cpp-python with Openblas
+RUN LLAMA_OPENBLAS=on pip install --force-reinstall --ignore-installed --no-cache-dir llama-cpp-python
+
 COPY . /app
 
 RUN chmod +x ./entrypoint.sh

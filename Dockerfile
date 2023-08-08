@@ -6,7 +6,7 @@ WORKDIR /app
 ENV HOST 0.0.0.0
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential wget cmake sqlite3
+    apt-get install -y --no-install-recommends build-essential wget cmake sqlite3 libopenblas-dev
 
 # install dependencies
 RUN pip install --upgrade pip

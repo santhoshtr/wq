@@ -19,8 +19,7 @@ def get_llm():
         lora_path=None,
         n_batch=n_batch,
         n_ctx=n_ctx,
-        n_gpu_layers=0,
-        n_threads=max(len(os.sched_getaffinity(0)) - 2, 1),
+        n_threads=max(len(os.sched_getaffinity(0)) - 1, 1),
         verbose=True,
     )
 

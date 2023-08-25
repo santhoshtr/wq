@@ -69,7 +69,10 @@ class RedisStore(BaseVectorStore):
         if "title" not in article_metadata:
             # Article not found?
             return
-        text_sections, html_sections = article.get_sections()
+        try:
+            text_sections, html_sections = article.get_sections()
+        except:
+            return
         content_vectors = self.embed(text_sections)
 
         # Remove existing records

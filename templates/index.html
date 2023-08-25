@@ -27,19 +27,14 @@
         </header>
 
         <main >
-            <section class="answer-container">
-                <p class="answer" v-if="waiting">
-                    Reading Wikipedia articles and answering. This might take a while...
-                </p>
-                <p class="answer" v-text="answer" v-else></p>
-            </section>
+
             <section class="results-container" v-if="contexts.length">
                 <h2>Relevant articles</h2>
                 <ul class="sources">
                     <li class="result" v-for="(context, index) in contexts" :key="context.title">
                             <h2 :title="context.score"><a :href="context?.url" v-text="context.title"></a></h2>
-                            <img :src="context.image" />
-                            <div class="context" v-html="context.html||context.context"></div>
+                            <img :src="pageInfos[context.title]?.imageurl||'https://en.wikipedia.org/static/images/icons/wikipedia.png'" />
+                            <div class="context" v-html="context.content_html"></div>
                     </li>
                 </ul>
              </section>

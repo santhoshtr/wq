@@ -7,40 +7,14 @@ const app = createApp({
         let language = ref('en')
         let title = ref('')
         let waiting = ref(false)
-        let answer = ref('')
         let contexts = ref([])
+        let pageInfos = ref({})
 
+        const getPageInfo = (language, title) => {
+            return fetch(`https://${language}.wikipedia.org/api/rest_v1/page/summary/${title}`)
+                .then((response) => response.json())
+        };
 
-        const getAnswer = async (query, context) => {
-            waiting.value = true
-            const decoder = new TextDecoder("utf-8");
-            const response = await fetch('/api/q', {
-                method: "POST",
-                body: JSON.stringify({
-                    query,
-                    language: language.value,
-                    context,
-                }),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8"
-                }
-            })
-
-            const reader = response.body.getReader();
-            let done, value;
-            answer.value = "According to Wikipedia, "
-            while (!done) {
-                ({ value, done } = await reader.read());
-                if (done) {
-                    return;
-                }
-                if (value) {
-                    waiting.value = false
-                }
-                value = decoder.decode(value);
-                answer.value += value
-            }
-        }
 
         const getContexts = (query) => {
             return fetch('/api/r', {
@@ -57,19 +31,18 @@ const app = createApp({
         }
 
         const onQuery = () => {
-            answer.value = ''
             contexts.value = []
             document.body.classList.add("wait")
             return getContexts(query.value).then((contextObjs) => {
                 contexts.value = contextObjs
-                if (contextObjs.length) {
-                    const bestContext = contextObjs[0];
-                    if (bestContext.score < 0.75) {
-                        getAnswer(query.value, bestContext.context);
-                    } else {
-                        answer.value = '';
-                        waiting.value = false;
-                    }
+                for (let i = 0; i < contextObjs.length; i++) {
+                    let title = contextObjs[i].title;
+                    getPageInfo(contextObjs[i].wikicode || 'en', title).then(pageInfo => {
+                        pageInfos.value[pageInfo.title]={
+                        "url" : pageInfo.content_urls?.desktop?.page,
+                        "imageurl": pageInfo.thumbnail?.source || "https://upload.wikimedia.org/wikipedia/en/8/80/Wikipedia-logo-v2.svg"
+                        }
+                    })
                 }
             }).finally(() => {
                 document.body.classList.remove("wait")
@@ -83,8 +56,8 @@ const app = createApp({
             title,
             onQuery,
             contexts,
-            answer,
             waiting,
+            pageInfos,
 
         }
     }

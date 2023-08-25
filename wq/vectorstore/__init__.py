@@ -1,4 +1,4 @@
 from wq.vectorstore.basestore import BaseVectorStore
-from wq.vectorstore.chromastore import ChromaVectorStore
+from wq.vectorstore.redisstore import RedisStore
 
-__all__ = ["BaseVectorStore", "ChromaVectorStore"]
+__all__ = ["BaseVectorStore", "RedisStore"]

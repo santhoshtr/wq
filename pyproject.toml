@@ -14,8 +14,8 @@ dependencies = [
     "jinja2",
     "python-dotenv",
     "bs4",
-    "llama-cpp-python",
-    "chromadb",
+    "redis",
+    "onnxruntime"
 ]
 
 
@@ -27,6 +27,10 @@ dev = [
     "ruff",
     "tox",
 ]
+experimental = [
+    "llama-cpp-python"
+]
+
 
 
 [tool.black]

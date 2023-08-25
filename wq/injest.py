@@ -1,12 +1,20 @@
 import functools
+import os
+
+from dotenv import load_dotenv
 
 from wq import Article
-from wq.vectorstore import ChromaVectorStore
+from wq.embedding import *
+from wq.vectorstore import *
+
+load_dotenv()
 
 
 @functools.lru_cache
 def get_vector_store():
-    vector_store = ChromaVectorStore(embedding_function=None)
+    store_cls = eval(os.environ.get("VECTOR_STORE"))
+    embedding_function = eval(os.environ.get("EMBEDDING_FUNCTION"))()
+    vector_store = store_cls(embedding_function=embedding_function)
     return vector_store
 
 

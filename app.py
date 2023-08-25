@@ -1,4 +1,3 @@
-import json
 import os
 
 from fastapi import FastAPI, Request, Response
@@ -7,8 +6,9 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from wq.llm import llm_prompt_streamer, llm_qa_streamer
+from wq.llm import llm_prompt_streamer
 from wq.retriever import retrieve
+from wq.types import RetrievalResult
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 app = FastAPI()
@@ -39,22 +39,12 @@ async def chat_page(request: Request):
 
 
 @app.post("/api/r")
-async def retrieve_context(request: Request) -> Response:
+async def retrieve_context(request: Request) -> list[RetrievalResult]:
     request_obj: dict = await request.json()
     request_obj.get("language", "en")
     query: str = request_obj.get("query").strip()
     n_results = request_obj.get("n_results", 4)
-    results = retrieve(query=query, n_results=n_results)
-    return Response(content=json.dumps(results), media_type="application/json")
-
-
-@app.post("/api/q")
-async def qa(request: Request) -> Response:
-    request_obj: dict = await request.json()
-    context: str = request_obj.get("context", "en")
-    request_obj.get("language", "en")
-    query: str = request_obj.get("query").strip()
-    return StreamingResponse(llm_qa_streamer(query, context), media_type="text/event-stream")
+    return retrieve(query=query, n_results=n_results)
 
 
 @app.post("/api/chat")

@@ -39,7 +39,7 @@ class RedisStore(BaseVectorStore):
             TextField("$.content_html", as_name="content_html"),
             VectorField(
                 "$.content_vector",
-                "FLAT",
+                "HNSW",
                 {
                     "TYPE": "FLOAT32",
                     "DIM": VECTOR_DIM,

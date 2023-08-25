@@ -65,14 +65,16 @@ class RedisStore(BaseVectorStore):
         return redis_client
 
     def add_article(self, article: Article):
-        article_metadata = article.get_page_metadata()
-        if "title" not in article_metadata:
-            # Article not found?
-            return
         try:
+            article_metadata = article.get_page_metadata()
+            if "title" not in article_metadata:
+                # Article not found?
+                return
+
             text_sections, html_sections = article.get_sections()
         except:
             return
+
         content_vectors = self.embed(text_sections)
 
         # Remove existing records

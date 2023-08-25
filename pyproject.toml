@@ -15,7 +15,10 @@ dependencies = [
     "python-dotenv",
     "bs4",
     "redis",
-    "onnxruntime"
+    "onnxruntime",
+    "tokenizers",
+    "requests",
+    "tqdm",
 ]
 
 

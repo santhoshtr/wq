@@ -114,7 +114,7 @@ button {
 
 .result {
   display: grid;
-  grid-template-columns: 1fr 11fr;
+  grid-template-columns: 11fr 1fr;
   padding: 0;
   grid-column: span 1;
   margin-bottom: 1em;
@@ -146,8 +146,9 @@ button {
 
 .result > .context > p {
   margin: 0;
-  padding: 0 1em;
+  padding-block-end: 1em;
 }
+
 .result > .pageinfo {
   grid-column: span 1;
 }

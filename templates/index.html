@@ -33,8 +33,8 @@
                 <ul class="sources">
                     <li class="result" v-for="(context, index) in contexts" :key="context.title">
                             <h2 :title="context.score"><a :href="context?.url" v-text="context.title"></a></h2>
-                            <img :src="pageInfos[context.title]?.imageurl||'https://en.wikipedia.org/static/images/icons/wikipedia.png'" />
                             <div class="context" v-html="context.content_html"></div>
+                            <img :src="pageInfos[context.title]?.imageurl||'https://en.wikipedia.org/static/images/icons/wikipedia.png'" />
                     </li>
                 </ul>
              </section>

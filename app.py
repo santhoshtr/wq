@@ -1,5 +1,9 @@
 import os
+import urllib
 
+import httpx
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse
@@ -9,6 +13,8 @@ from fastapi.templating import Jinja2Templates
 from wq.llm import llm_prompt_streamer
 from wq.retriever import retrieve
 from wq.types import RetrievalResult
+
+load_dotenv()
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 app = FastAPI()
@@ -53,6 +59,39 @@ async def chat_api(request: Request) -> Response:
     prompt: str = request_obj.get("prompt")
     prompt = prompt.strip()
     return StreamingResponse(llm_prompt_streamer(prompt), media_type="text/event-stream")
+
+
+@app.post("/telegram")
+async def webhook(request: Request):
+    TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+    BASE_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
+    data = await request.json()
+
+    chat_id = data["message"]["chat"]["id"]
+    if "text" not in data["message"]:
+        return
+
+    print(data)
+    text = data["message"]["text"]
+    if text == "/start":
+        response_msg = "Hi!, I am Wikipedia bot. Ask me anything!"
+        await httpx.AsyncClient().get(f"{BASE_URL}/sendMessage?chat_id={chat_id}&text={response_msg}")
+        return data
+    question = text
+
+    result: RetrievalResult = retrieve(query=question, n_results=1)[0]
+    wiki_url = f"https://{result.wikicode}.wikipedia.org/wiki/{urllib.parse.quote(result.title)}"
+    response_msg = f"""
+From {result.title} article of Wikipedia:
+
+{BeautifulSoup(result.content_html).get_text()}
+
+Read more: {wiki_url}
+    """
+    # Refer: https://core.telegram.org/bots/api#formatting-options
+    payload = {"chat_id": chat_id, "text": response_msg}
+    await httpx.AsyncClient().get(f"{BASE_URL}/sendMessage", params=payload)
+    return data
 
 
 if __name__ == "__main__":

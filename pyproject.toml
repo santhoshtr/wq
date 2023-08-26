@@ -19,6 +19,7 @@ dependencies = [
     "tokenizers",
     "requests",
     "tqdm",
+    "httpx",
 ]
 
 

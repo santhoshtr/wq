@@ -43,7 +43,7 @@ async def retrieve_context(request: Request) -> list[RetrievalResult]:
     request_obj: dict = await request.json()
     request_obj.get("language", "en")
     query: str = request_obj.get("query").strip()
-    n_results = request_obj.get("n_results", 4)
+    n_results = request_obj.get("n_results", 2)
     return retrieve(query=query, n_results=n_results)
 
 

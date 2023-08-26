@@ -57,14 +57,14 @@ class RedisStore(BaseVectorStore):
             redis_client.ft(INDEX_NAME).info()
             # redis_client.ft(INDEX_NAME).dropindex()
             print("Index already exists")
-        except:
+        except Exception:
             # Create RediSearch Index
             redis_client.ft(INDEX_NAME).create_index(
                 schema, definition=IndexDefinition(prefix=[PREFIX], index_type=IndexType.JSON)
             )
         return redis_client
 
-    def add_article(self, article: Article):
+    def add_article(self, article: Article) -> None:
         try:
             article_metadata = article.get_page_metadata()
             if "title" not in article_metadata:
@@ -72,18 +72,24 @@ class RedisStore(BaseVectorStore):
                 return
 
             text_sections, html_sections = article.get_sections()
-        except:
+        except Exception:
             return
 
-        content_vectors = self.embed(text_sections)
+        revision = int(article_metadata.get("revision"))
 
-        # Remove existing records
+        existing_revision = self.db.keys(f"{PREFIX}:{article.language}:{article.title}:{revision}*")
+        if len(existing_revision):
+            # Article with same revision already exist.
+            return
+
         existing_keys = self.db.keys(f"{PREFIX}:{article.language}:{article.title}*")
         if len(existing_keys):
+            # Remove existing records
             self.db.delete(*existing_keys)
 
         pipeline = self.db.pipeline()
-        revision = int(article_metadata.get("revision"))
+
+        content_vectors = self.embed(text_sections)
         for index, html_section in enumerate(html_sections):
             doc = {}
             key = f"{article.language}:{article.title}:{revision}:{index}"
@@ -97,9 +103,7 @@ class RedisStore(BaseVectorStore):
 
         pipeline.execute()
 
-        print(f"Loaded {self.db.info()['db0']['keys']} documents in Redis search index with name: {INDEX_NAME}")
-
-    def query(self, query, n_results=1):
+    def query(self, query: str, n_results=1) -> list[RetrievalResult]:
         return_fields: list = ["title", "wikicode", "revision", "content_html", "vector_score"]
 
         k = n_results
@@ -116,7 +120,7 @@ class RedisStore(BaseVectorStore):
 
         # perform vector search
         results = self.db.ft(INDEX_NAME).search(query, query_params=params_dict)
-        print(results)
+
         search_results = []
         for _i, doc in enumerate(results.docs):
             score = 1 - float(doc.vector_score)

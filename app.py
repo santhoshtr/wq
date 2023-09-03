@@ -78,19 +78,24 @@ async def webhook(request: Request):
         await httpx.AsyncClient().get(f"{BASE_URL}/sendMessage?chat_id={chat_id}&text={response_msg}")
         return data
     question = text
-
-    result: RetrievalResult = retrieve(query=question, n_results=1)[0]
-    wiki_url = f"https://{result.wikicode}.wikipedia.org/wiki/{urllib.parse.quote(result.title)}"
-    response_msg = f"""
+    results = retrieve(query=question, n_results=1)
+    if len(results) == 0 :
+        response_msg ="Sorry, Could not find answer for that question."
+        payload = {"chat_id": chat_id, "text": response_msg}
+        await httpx.AsyncClient().get(f"{BASE_URL}/sendMessage", params=payload)
+    else:
+        result: RetrievalResult = results[0]
+        wiki_url = f"https://{result.wikicode}.wikipedia.org/wiki/{urllib.parse.quote(result.title)}"
+        response_msg = f"""
 From {result.title} article of Wikipedia:
 
 {BeautifulSoup(result.content_html).get_text()}
 
 Read more: {wiki_url}
-    """
-    # Refer: https://core.telegram.org/bots/api#formatting-options
-    payload = {"chat_id": chat_id, "text": response_msg}
-    await httpx.AsyncClient().get(f"{BASE_URL}/sendMessage", params=payload)
+        """
+        # Refer: https://core.telegram.org/bots/api#formatting-options
+        payload = {"chat_id": chat_id, "text": response_msg}
+        await httpx.AsyncClient().get(f"{BASE_URL}/sendMessage", params=payload)
     return data
 
 

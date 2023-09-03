@@ -1,13 +1,16 @@
 import functools
+import logging.config
 import os
 
 from dotenv import load_dotenv
 
-from wq import Article
+from wq.wiki import Article
 from wq.embedding import *
 from wq.vectorstore import *
 
 load_dotenv()
+
+logging.config.fileConfig("logging.conf")
 
 
 @functools.lru_cache

@@ -1,6 +1,8 @@
 """Chroma is the open-source embedding database."""
 
 import os
+import logging
+import logging.config
 
 import numpy as np
 import redis
@@ -9,11 +11,14 @@ from redis.commands.search.field import NumericField, TextField, VectorField
 from redis.commands.search.indexDefinition import IndexDefinition, IndexType
 from redis.commands.search.query import Query as RediSearchQuery
 
-from wq import Article
+from wq.wiki import Article
 from wq.types import RetrievalResult
 from wq.vectorstore import BaseVectorStore
 
 load_dotenv()
+
+
+logging.config.fileConfig("logging.conf")
 
 # Read environment variables for Redis
 REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
@@ -27,8 +32,8 @@ DISTANCE_METRIC = "COSINE"  # distance metric for the vectors (ex. COSINE, IP, L
 
 
 class RedisStore(BaseVectorStore):
-    def __init__(self, embedding_function=None):
-        super().__init__(embedding_function)
+    def __init__(self, embedding_function=None, threshold_score=0.85):
+        super().__init__(embedding_function, threshold_score)
         self.db = self.connect()
 
     def connect(self):
@@ -56,23 +61,25 @@ class RedisStore(BaseVectorStore):
         try:
             redis_client.ft(INDEX_NAME).info()
             # redis_client.ft(INDEX_NAME).dropindex()
-            print("Index already exists")
+            logging.debug("Index already exists")
         except Exception:
             # Create RediSearch Index
             redis_client.ft(INDEX_NAME).create_index(
                 schema, definition=IndexDefinition(prefix=[PREFIX], index_type=IndexType.JSON)
             )
+
         return redis_client
 
     def add_article(self, article: Article) -> None:
         try:
             article_metadata = article.get_page_metadata()
             if "title" not in article_metadata:
-                # Article not found?
+                logging.error("Article not found")
                 return
 
             text_sections, html_sections = article.get_sections()
         except Exception:
+            logging.exception("message")
             return
 
         revision = int(article_metadata.get("revision"))
@@ -80,6 +87,7 @@ class RedisStore(BaseVectorStore):
         existing_revision = self.db.keys(f"{PREFIX}:{article.language}:{article.title}:{revision}*")
         if len(existing_revision):
             # Article with same revision already exist.
+            logging.error("Article with same revision already exist.")
             return
 
         existing_keys = self.db.keys(f"{PREFIX}:{article.language}:{article.title}*")
@@ -124,6 +132,9 @@ class RedisStore(BaseVectorStore):
         search_results = []
         for _i, doc in enumerate(results.docs):
             score = 1 - float(doc.vector_score)
+            score = self.normalized_score(score)
+            if score < self.threshold_score:
+                continue
             search_results.append(
                 RetrievalResult(
                     id=doc.id,
@@ -131,7 +142,10 @@ class RedisStore(BaseVectorStore):
                     revision=int(doc.revision),
                     wikicode=doc.wikicode,
                     content_html=doc.content_html,
-                    score=round(score, 3),
+                    score=score,
                 )
             )
         return search_results
+
+    def normalized_score(self, score: float) -> float:
+        return round(score, 3)

@@ -2,13 +2,14 @@ from typing import Any
 
 from tqdm import tqdm
 
-from wq import Article
+from wq.wiki import Article
 from wq.types import RetrievalResult
 
 
 class BaseVectorStore:
-    def __init__(self, embedding_function=None) -> None:
+    def __init__(self, embedding_function=None, threshold_score=0.85) -> None:
         self.embedding_function = embedding_function
+        self.threshold_score = threshold_score
 
     def embed(self, texts: list[str]) -> list[list[Any]]:
         if not self.embedding_function:
@@ -34,3 +35,6 @@ class BaseVectorStore:
             self.add_article(article)
             pbar.update(1)
         pbar.close()
+
+    def normalized_score(self, score: float) -> float:
+        return score

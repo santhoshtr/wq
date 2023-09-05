@@ -8,18 +8,19 @@ classifiers = ["Private :: Do Not Upload"]
 version = "0"
 requires-python = ">=3.9"
 dependencies = [
-    "fastapi",
-    "uvicorn",
-    "pydantic",
-    "ecs-logging",
-    "jinja2",
-    "python-dotenv",
     "bs4",
-    "redis",
+    "ctranslate2",
+    "ecs-logging",
+    "fastapi",
+    "httpx",
+    "jinja2",
     "onnxruntime",
+    "pydantic",
+    "python-dotenv",
+    "redis",
     "tokenizers",
     "tqdm",
-    "httpx",
+    "uvicorn",
 ]
 
 

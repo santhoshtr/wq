@@ -33,6 +33,8 @@ colorama==0.4.6
     # via tox
 coloredlogs==15.0.1
     # via onnxruntime
+ctranslate2==3.19.0
+    # via wq (pyproject.toml)
 distlib==0.3.7
     # via virtualenv
 ecs-logging==2.1.0
@@ -70,7 +72,9 @@ mpmath==1.3.0
 mypy-extensions==1.0.0
     # via black
 numpy==1.25.2
-    # via onnxruntime
+    # via
+    #   ctranslate2
+    #   onnxruntime
 onnxruntime==1.15.1
     # via wq (pyproject.toml)
 packaging==23.1
@@ -103,6 +107,8 @@ pyproject-hooks==1.0.0
     # via build
 python-dotenv==1.0.0
     # via wq (pyproject.toml)
+pyyaml==6.0.1
+    # via ctranslate2
 redis==5.0.0
     # via wq (pyproject.toml)
 ruff==0.0.282

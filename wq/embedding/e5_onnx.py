@@ -18,7 +18,7 @@ load_dotenv()
 # Thanks to https://huggingface.co/nixiesearch/e5-small-v2-onnx/
 
 
-class E5Embedder:
+class E5ONNXEmbedder:
     def __init__(self):
         self.model = None
         self.model_name = os.environ.get("E5_MODEL_NAME")
@@ -88,7 +88,7 @@ messages = [
 ]
 
 if __name__ == "__main__":
-    embedder = E5Embedder()
+    embedder = E5ONNXEmbedder()
     encoding_matrix = embedder(messages)
     print(len(encoding_matrix[0]))
     print(np.inner(encoding_matrix, encoding_matrix))

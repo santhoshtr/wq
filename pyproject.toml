@@ -1,6 +1,7 @@
 [build-system]
 requires = ["setuptools", "wheel", "hatchling"]
-build-backend = "hatchling.build"
+# build-backend = "hatchling.build"
+build-backend = "setuptools.build_meta:__legacy__"
 
 [project]
 name = "wq"
@@ -21,6 +22,7 @@ dependencies = [
     "tokenizers",
     "tqdm",
     "uvicorn",
+    # "sentencesegmenter @ git+https://github.com/santhoshtr/sentencesegmenter.git@2d58510ed5eb6572483dea65592d2c078703883d",
 ]
 
 

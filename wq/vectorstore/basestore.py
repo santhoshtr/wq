@@ -2,8 +2,8 @@ from typing import Any
 
 from tqdm import tqdm
 
-from wq.wiki import Article
 from wq.types import RetrievalResult
+from wq.wiki import Article
 
 
 class BaseVectorStore:

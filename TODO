@@ -1,0 +1,22 @@
+Use E5 multilingual CT2 for embedding
+
+```
+pip install transformers[torch]
+ct2-transformers-converter --model=intfloat/multilingual-e5-large --output_dir=models/multilingua-e5-large-ct2
+```
+
+See https://opennmt.net/CTranslate2/guides/transformers.html#special-tokens-in-translation
+and https://discuss.huggingface.co/t/extracting-token-embeddings-from-pretrained-language-models/6834/3
+
+```
+pipe = pipeline('feature-extraction', model=model, tokenizer=tokenizer)
+```
+
+https://huggingface.co/intfloat/multilingual-e5-small
+
+
+normalize score
+
+score =  (10x-7)/(10-7)
+
+split by sentence, remove references

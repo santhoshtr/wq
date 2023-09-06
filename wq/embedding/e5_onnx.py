@@ -80,6 +80,11 @@ class E5ONNXEmbedder:
 
 
 messages = [
+    # "അയൽക്കാരെ സ്നേഹിക്കുക",
+    # "നിന്നെപ്പോലെ നിന്റെ അയൽക്കാരെയും സ്നേഹിക്കണം",
+    # "ഇതൊന്നു നോക്കണം നാളെത്തന്നെ.",
+    # "എന്റെ അച്ചൻ ഓഫീസിൽ പോയി",
+    # "പിതാവ് ഓഫീസിലെത്തി",
     "we are sorry for the inconvenience",
     "we are sorry for the delay",
     "we regret for your inconvenience",

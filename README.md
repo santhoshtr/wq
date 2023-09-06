@@ -48,6 +48,7 @@ How to feed table and list content to embedding so that they are semantically co
 ## Telegram Bot
 
 To make the application a real chatbot, I added a telegram bot integrated. Please contact me to get the link to the bot.
+![image](https://github.com/santhoshtr/wq/assets/161672/617e6241-8ab7-4fc8-8ef2-18c878949823)
 
 ## How to run?
 

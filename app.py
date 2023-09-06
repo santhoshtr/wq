@@ -10,7 +10,6 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from wq.llm import llm_prompt_streamer
 from wq.retriever import retrieve
 from wq.types import RetrievalResult
 
@@ -28,10 +27,6 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
-
-
-def get_languages():
-    return ["en", "es"]
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -55,6 +50,8 @@ async def retrieve_context(request: Request) -> list[RetrievalResult]:
 
 @app.post("/api/chat")
 async def chat_api(request: Request) -> Response:
+    from wq.llm import llm_prompt_streamer
+
     request_obj: dict = await request.json()
     prompt: str = request_obj.get("prompt")
     prompt = prompt.strip()
@@ -71,7 +68,6 @@ async def webhook(request: Request):
     if "text" not in data["message"]:
         return
 
-    print(data)
     text = data["message"]["text"]
     if text == "/start":
         response_msg = "Hi!, I am Wikipedia bot. Ask me anything!"
@@ -79,8 +75,8 @@ async def webhook(request: Request):
         return data
     question = text
     results = retrieve(query=question, n_results=1)
-    if len(results) == 0 :
-        response_msg ="Sorry, Could not find answer for that question."
+    if len(results) == 0:
+        response_msg = "Sorry, Could not find answer for that question."
         payload = {"chat_id": chat_id, "text": response_msg}
         await httpx.AsyncClient().get(f"{BASE_URL}/sendMessage", params=payload)
     else:
